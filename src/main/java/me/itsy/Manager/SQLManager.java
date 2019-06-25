@@ -22,7 +22,6 @@ public class SQLManager {
             stmt.execute("CREATE TABLE IF NOT EXISTS PLAYERSSTARTERS (" +
                     "PLAYER UUID UNSIGNED NOT NULL," +
                     "POKEMON UUID UNSIGNED," +
-                    "POKEFILL BIT NOT NULL DEFAULT 0," +
                     "PRIMARY KEY (PLAYER))");
 
             stmt.close();
