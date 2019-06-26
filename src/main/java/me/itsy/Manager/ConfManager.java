@@ -33,7 +33,6 @@ public class ConfManager {
                 save();
             }
         }catch (IOException e){
-            ReRoll.getLogger().info("Could not create default directory");
             e.printStackTrace();
         }
     }
@@ -43,7 +42,6 @@ public class ConfManager {
             configLoader.save(configNode);
         }catch (IOException e){
             e.printStackTrace();
-            ReRoll.getLogger().info("Could not save node!");
         }
     }
 

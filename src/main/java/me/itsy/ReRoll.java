@@ -29,12 +29,6 @@ import java.nio.file.Path;
 public class ReRoll {
 
     @Inject
-    private static Logger logger;
-
-    @Inject
-    Game game;
-
-    @Inject
     @ConfigDir(sharedRoot = false)
     private Path dir;
 
@@ -45,11 +39,12 @@ public class ReRoll {
         return instance.dir;
     }
 
-    public static Logger getLogger(){return logger;}
+    @Inject
+    Game game;
 
     @Listener
     public void onPreInit(GamePreInitializationEvent e){
-
+        instance = this;
         ConfManager.setup(dir);
         SQLManager.load();
 
@@ -58,7 +53,7 @@ public class ReRoll {
     @Listener
     public void onEnable(GameInitializationEvent e){
 
-        instance = this;
+
         regiseterCommands();
         registerListeners();
 
@@ -77,7 +72,7 @@ public class ReRoll {
 
     public void registerListeners(){
 
-        game.getEventManager().registerListeners(this, new JoinServer());
+        //game.getEventManager().registerListeners(this, new JoinServer());
         Pixelmon.EVENT_BUS.register(new PixelreceivedEvent());
 
     }

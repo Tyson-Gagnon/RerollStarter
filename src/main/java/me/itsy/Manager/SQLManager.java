@@ -11,7 +11,7 @@ import java.sql.Statement;
 public class SQLManager {
 
     private static SqlService sql;
-    private static final String URI = "jdbc:h2:" + ReRoll.getDir().toString() + "/players.db";
+    private static final String URI = "jdbc:h2:" + ReRoll.getDir().toString() + "/starters.db";
 
     public static void load(){
         try{
