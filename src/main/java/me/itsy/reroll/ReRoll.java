@@ -1,12 +1,13 @@
-package me.itsy;
+package me.itsy.reroll;
 
+import com.google.inject.Inject;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import me.itsy.Commands.ReRollCommand;
-import me.itsy.Events.JoinServer;
-import me.itsy.Events.PixelreceivedEvent;
-import me.itsy.Manager.ConfManager;
-import me.itsy.Manager.SQLManager;
-import org.slf4j.Logger;
+import me.itsy.reroll.Commands.Prompt;
+import me.itsy.reroll.Commands.ReRollCommand;
+import me.itsy.reroll.Commands.Toggle;
+import me.itsy.reroll.Events.InventoryClickEvent;
+import me.itsy.reroll.Events.PixelreceivedEvent;
+import me.itsy.reroll.Manager.ConfManager;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -14,18 +15,18 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
-import sun.rmi.runtime.Log;
+import scala.tools.nsc.backend.icode.analysis.TypeFlowAnalysis;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
-
 
 @Plugin(name = "ReRoller",
         version = "0.1,",
         id = "rerollpixel",
-        authors = "itsyxd")
+        authors = "itsyxd"
+)
 public class ReRoll {
 
     @Inject
@@ -43,10 +44,11 @@ public class ReRoll {
     Game game;
 
     @Listener
-    public void onPreInit(GamePreInitializationEvent e){
+    public void onPreInitialization(GamePreInitializationEvent e) {
+
         instance = this;
         ConfManager.setup(dir);
-        SQLManager.load();
+
 
     }
 
@@ -59,24 +61,41 @@ public class ReRoll {
 
     }
 
-    public void regiseterCommands(){
+    private void regiseterCommands(){
+
+
+        CommandSpec rePrompt = CommandSpec.builder()
+                .arguments(GenericArguments.player(Text.of("target")))
+                .executor(new Prompt())
+                .permission("reroll.prompt")
+                .build();
+
+        CommandSpec reToggle = CommandSpec.builder()
+                .executor(new Toggle())
+                .permission("reroll.toggle")
+                .build();
 
         CommandSpec reRolleCMD = CommandSpec.builder()
                 .arguments(GenericArguments.player(Text.of("target")))
                 .executor(new ReRollCommand())
                 .permission("reroll.reroll")
+                .child(reToggle,"toggle")
+                .child(rePrompt,"prompt")
                 .build();
 
         game.getCommandManager().register(this, reRolleCMD,"Reroll");
     }
 
-    public void registerListeners(){
-
-        //game.getEventManager().registerListeners(this, new JoinServer());
+    private void registerListeners(){
+        game.getEventManager().registerListeners(this, new InventoryClickEvent());
         Pixelmon.EVENT_BUS.register(new PixelreceivedEvent());
 
     }
 
+    @Listener
+    public void onDisable(GameStoppedServerEvent e) {
+
+    }
 
 
 
