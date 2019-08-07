@@ -26,17 +26,20 @@ public class ConfManager {
 
     public static void load() {
         try {
-            if(!Files.exists(dir))
+            if (!Files.exists(dir)) {
                 Files.createDirectory(dir);
 
-            configurationLoader = HoconConfigurationLoader.builder().setPath(config).build();
-            configurationNode = configurationLoader.load();
+                configurationLoader = HoconConfigurationLoader.builder().setPath(config).build();
+                configurationNode = configurationLoader.load();
 
 
-            configurationNode.getNode("enabled").setValue(true);
-            save();
-
-        } catch(IOException e) {
+                configurationNode.getNode("enabled").setValue(true);
+                save();
+            }else{
+                configurationLoader = HoconConfigurationLoader.builder().setPath(config).build();
+                configurationNode = configurationLoader.load();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -46,7 +49,7 @@ public class ConfManager {
             configurationLoader.save(configurationNode);
 
         } catch (IOException e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
